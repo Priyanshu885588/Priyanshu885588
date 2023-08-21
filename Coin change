@@ -1,29 +1,33 @@
-def calculate_change(denominations, quantities, purchase_amount, customer_choice):
-    total_change = sum(denom * quant for denom, quant in zip(denominations, quantities))
-    change = total_change - purchase_amount
-    
-    change_denominations = []
-    for denom in reversed(denominations):
-        num_notes = min(change // denom, quantities[denominations.index(denom)])
-        change -= num_notes * denom
-        quantities[denominations.index(denom)] -= num_notes
-        change_denominations.append((denom, num_notes))
-    
-    return change_denominations
+#include <iostream>
 
-# Available denominations and their quantities
-denominations = [50, 1]
-quantities = {50: 6, 1: 5}
+using namespace std;
 
-# Amount of purchase
-purchase_amount = 20 * 100 + 50  # Convert to paise
+int main() {
+    // Denominations available and their quantities
+    int denominations[] = {50, 100, 500, 1000, 5000};
+    int quantity[] = {6, 10, 10, 10, 10};
 
-# Customer choice: 'more' or 'less'
-customer_choice = 'more'
+    // Amount paid and change to be given
+    int amountPaid = 2000; // 20 rupees
+    int change = 1250;     // 12 rupees and 50 paise
 
-change_denominations = calculate_change(denominations, quantities, purchase_amount, customer_choice)
+    cout << "Customer choice: More quantity (1) or less quantity (2): ";
+    int customerChoice;
+    cin >> customerChoice;
 
-# Output the change denominations
-print("Change denominations:")
-for denom, num_notes in change_denominations:
-    print(f"{num_notes} {'coin' if denom == 1 else 'note'} of {denom} {'paise' if denom == 1 else 'rupees'}")
+    cout << "Change breakdown:\n";
+
+    for (int i = 4; i >= 0; i--) {
+        int count = min(change / denominations[i], quantity[i]);
+        if (count > 0) {
+            cout << "Number of " << denominations[i] / 100 << " rupee ";
+            if (denominations[i] == 50) cout << "coin(s): ";
+            else cout << "note(s): ";
+            cout << count << "\n";
+            change -= count * denominations[i];
+            quantity[i] -= count;
+        }
+    }
+
+    return 0;
+}
