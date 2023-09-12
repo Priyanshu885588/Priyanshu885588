@@ -1,0 +1,52 @@
+<?xml version = "1.0" encoding = "utf-8" ?> <!-- lab5.html -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="author" content="Putta">
+    <title>Animal Stacking</title>
+    <style>
+        h1 {
+            text-align: center;
+        }
+
+        .dog {
+            position: absolute;
+            left: 10%;
+            top: 10%;
+            z-index: 0;
+        }
+
+        .cat {
+            position: absolute;
+            left: 30%;
+            top: 30%;
+            z-index: 1;
+        }
+
+        .horse {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            z-index: 2;
+        }
+    </style>
+    <script>
+        var topIndex = 2;
+        function moveToTop(picture) {
+            picture.style.zIndex = ++topIndex;
+        }
+    </script>
+</head>
+
+<body>
+    <h1>Image Demo</h1>
+    <div id="image-container">
+        <img id="dog" class="dog" src="dog.jpeg" onmouseover="moveToTop(this)" width=" 400" height="300">
+        <img id="cat" class="cat" src="cat.jpeg" onmouseover="moveToTop(this)" width=" 400" height="300">
+        <img id="horse" class="horse" src="horse.jpeg" onmouseover="moveToTop(this)" width="400" height="300">
+    </div>
+</body>
+
+</html>
