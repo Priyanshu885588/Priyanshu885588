@@ -1,0 +1,6 @@
+n = int(input("Enter the value of 'n': "))
+sum_of_natural_numbers = n * (n + 1) // 2
+average = sum_of_natural_numbers / n
+
+print(f"Sum of the first {n} natural numbers: {sum_of_natural_numbers}")
+print(f"Average of the first {n} natural numbers: {average}")

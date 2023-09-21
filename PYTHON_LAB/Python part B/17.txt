@@ -1,0 +1,9 @@
+import re
+
+text = "The price is $25.99."
+
+pattern = r"\d"
+
+matches = re.findall(pattern, text)
+
+print(matches)
