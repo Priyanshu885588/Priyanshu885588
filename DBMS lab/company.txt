@@ -1,0 +1,128 @@
+CREATE TABLE emp (
+    ssn VARCHAR(20) PRIMARY KEY,
+    fname VARCHAR(20),
+    lname VARCHAR(20),
+    address VARCHAR(20),
+    sex CHAR(1),
+    salary INT
+);
+
+CREATE TABLE dept (
+    dno INT PRIMARY KEY,
+    dname VARCHAR(20),
+    mgrssn VARCHAR(20),
+    mgrstartdate DATE,
+    FOREIGN KEY (mgrssn) REFERENCES emp(ssn)
+);
+
+ALTER TABLE emp ADD superssn VARCHAR(20);
+ALTER TABLE emp ADD FOREIGN KEY (superssn) REFERENCES emp(ssn);
+ALTER TABLE emp ADD dno INT;
+ALTER TABLE emp ADD FOREIGN KEY (dno) REFERENCES dept(dno);
+
+CREATE TABLE dloc (
+    dno INT PRIMARY KEY,
+    dloc VARCHAR(20),
+    FOREIGN KEY (dno) REFERENCES dept(dno)
+);
+
+CREATE TABLE project (
+    pno INT PRIMARY KEY,
+    pname VARCHAR(20),
+    ploc VARCHAR(20),
+    dno INT,
+    FOREIGN KEY (dno) REFERENCES dept(dno)
+);
+
+CREATE TABLE works_on (
+    ssn VARCHAR(20),
+    pno INT,
+    hours INT,
+    PRIMARY KEY (ssn, pno),
+    FOREIGN KEY (ssn) REFERENCES emp(ssn),
+    FOREIGN KEY (pno) REFERENCES project(pno)
+);
+
+INSERT INTO emp (ssn, fname, lname, address, sex, salary)
+VALUES ('RNSECE01', 'JOHN', 'SCOTT', 'BANGALORE', 'M', 450000);
+
+INSERT INTO emp (ssn, fname, lname, address, sex, salary)
+VALUES ('RNSCSE01', 'JAMES', 'SMITH', 'BANGALORE', 'M', 500000);
+
+INSERT INTO emp (ssn, fname, lname, address, sex, salary)
+VALUES ('RNSCSE02', 'HEARN', 'BAKER', 'BANGALORE', 'M', 700000);
+
+INSERT INTO emp (ssn, fname, lname, address, sex, salary)
+VALUES ('RNSCSE03', 'EDWARD', 'SCOTT', 'MYSORE', 'M', 500000);
+
+INSERT INTO emp (ssn, fname, lname, address, sex, salary)
+VALUES ('RNSCSE04', 'PAVAN', 'HEGDE', 'MANGALORE', 'M', 650000);
+
+INSERT INTO emp (ssn, fname, lname, address, sex, salary)
+VALUES ('RNSCSE05', 'GIRISH', 'MALYA', 'MYSORE', 'M', 450000);
+
+INSERT INTO emp (ssn, fname, lname, address, sex, salary)
+VALUES ('RNSCSE06', 'NEHA', 'SN', 'BANGALORE', 'F', 800000);
+
+INSERT INTO emp (ssn, fname, lname, address, sex, salary) 
+VALUES ('RNSACC01', 'AHANA', 'K', 'MANGALORE', 'F', 350000);
+
+INSERT INTO emp (ssn, fname, lname, address, sex, salary) 
+VALUES ('RNSACC02', 'SANTHOSH', 'KUMAR', 'MANGALORE', 'M', 300000);
+
+
+
+INSERT INTO dept VALUES ('3', 'ECE', 'RNSECE01', '2008-06-01');
+INSERT INTO dept VALUES ('5', 'CSE', 'RNSCSE05', '2002-06-01');
+INSERT INTO dept VALUES ('1', 'ACCOUNTS', 'RNSACC02', '2001-01-01');
+
+
+UPDATE emp SET superssn=NULL, dno='3' WHERE ssn='RNSECE01';
+UPDATE emp SET superssn='RNSCSE02', dno='5' WHERE ssn='RNSCSE01';
+UPDATE emp SET superssn='RNSCSE03', dno='5' WHERE ssn='RNSCSE02';
+UPDATE emp SET superssn='RNSCSE04', dno='5' WHERE ssn='RNSCSE03';
+UPDATE emp SET dno='5', superssn='RNSCSE05' WHERE ssn='RNSCSE04';
+UPDATE emp SET dno='5', superssn='RNSCSE06' WHERE ssn='RNSCSE05';
+UPDATE emp SET dno='5', superssn=NULL WHERE ssn='RNSCSE06';
+UPDATE emp SET dno='1', superssn='RNSACC02' WHERE ssn='RNSACC01';
+UPDATE emp SET dno='1', superssn=NULL WHERE ssn='RNSACC02';
+
+
+INSERT INTO dloc VALUES ('3', 'BANGALORE');
+INSERT INTO dloc VALUES ('5', 'MANGALORE');
+
+
+INSERT INTO project VALUES ('100', 'IOT', 'BANGALORE', '5');
+INSERT INTO project VALUES ('101', 'CLOUD', 'BANGALORE', '5');
+INSERT INTO project VALUES ('102', 'BIGDATA', 'BANGALORE', '5');
+INSERT INTO project VALUES ('103', 'SENSORS', 'BANGALORE', '3');
+
+INSERT INTO works_on VALUES ('RNSECE01', '103',2);
+INSERT INTO works_on VALUES ('RNSCSE03', '102',6);
+INSERT INTO works_on VALUES ('RNSCSE06', '102',9);
+INSERT INTO works_on VALUES ('RNSCSE05', '101',10);
+INSERT INTO works_on VALUES ('RNSCSE04', '100',4);
+INSERT INTO works_on VALUES ('RNSCSE02', '100',6);
+INSERT INTO works_on VALUES ('RNSCSE01', '102',7);
+INSERT INTO works_on VALUES ('RNSCSE01', '101',3);
+INSERT INTO works_on VALUES ('RNSCSE01', '100',6);
+
+query 1
+
+(select distinct p.pno from project p,dept d,emp e where e.dno = d.dno and d.mgrssn=e.ssn and e.lname='SCOTT')union(select distinct p1.pno from project p1,works_on w,emp e1 where p1.pno=w.pno and e1.ssn=w.ssn and e1.lname = 'SCOTT');
+
+query 2
+
+select e.fname,e.lname,1.1*e.salary as incr_sal from emp e,project p,works_on w where e.ssn = w.ssn and w.pno = p.pno and p.pname ='IOT';
+
+query 3 
+
+select sum(e.salary),max(e.salary),min(e.salary),avg(e.salary) from emp e,dept d where e.dno=d.dno and d.dname='ACCOUNTS';
+
+query 4
+
+select e.lname,e.fname,e.dno from emp e where not exists((select pno from project where dno=5) except(select pno from works_on where e.ssn=ssn));
+
+query 5
+
+select d.dno,count(*) from dept d,emp e where d.dno = e.dno and e.salary>600000 and d.dno in(select e1.dno from emp e1 group by e1.dno having count(*)>5) group by d.dno;
