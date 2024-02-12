@@ -52,7 +52,8 @@ create table book_lending
 	date_out date,
 	due_date date,
 	FOREIGN KEY (Book_id) REFERENCES Book(Book_id) ON DELETE CASCADE,
-	FOREIGN KEY (Branch_id) REFERENCES library_branch (Branch_id) ON DELETE CASCADE
+	FOREIGN KEY (Branch_id) REFERENCES library_branch (Branch_id) ON DELETE CASCADE,
+	PRIMARY KEY (Book_id,Branch_id)
 );
 
 insert into publisher values('MCGRAW-HILL','BANGALORE',9989076587);
