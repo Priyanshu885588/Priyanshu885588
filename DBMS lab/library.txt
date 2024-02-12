@@ -2,7 +2,7 @@ create table publisher
 (
 	Name varchar(20) PRIMARY KEY,
 	Address varchar(50),
-	Phone integer
+	Phone BIGINT
 );
 
 create table book
