@@ -1,9 +1,0 @@
-import re
-
-text = "My name is John, and his name is Alice."
-
-pattern = r"name"
-
-matches = re.findall(pattern, text)
-
-print(matches)

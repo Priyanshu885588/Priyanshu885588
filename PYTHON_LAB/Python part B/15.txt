@@ -1,9 +1,0 @@
-import re
-
-text = "The cat and the bat are on the mat."
-
-pattern = r"[abc]"
-
-matches = re.findall(pattern, text)
-
-print(matches)

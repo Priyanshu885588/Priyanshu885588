@@ -1,9 +1,0 @@
-import re
-
-text = "Variable_123 is an example."
-
-pattern = r"\w"
-
-matches = re.findall(pattern, text)
-
-print(matches)
