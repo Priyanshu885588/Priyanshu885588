@@ -1,0 +1,139 @@
+create table publisher
+(
+	Name varchar(20) PRIMARY KEY,
+	Address varchar(50),
+	Phone integer
+);
+
+create table book
+(
+	Book_id int PRIMARY KEY,
+	Title varchar(20),
+	Pub_year varchar(20),
+	Pub_name varchar(20),
+	FOREIGN KEY (Pub_name) REFERENCES Publisher(Name) ON DELETE CASCADE
+);
+
+create table book_author
+(
+	Book_id int,
+	Author_name varchar(20),
+	FOREIGN KEY (Book_id) REFERENCES Book(Book_id) ON DELETE CASCADE,
+	PRIMARY KEY (Book_id,Author_Name)
+);
+
+create table library_branch
+(
+	Branch_id int PRIMARY KEY,
+	Branch_Name varchar(20),
+	Address varchar(20)
+);
+
+create table book_copies
+(
+	Book_id int,
+	Branch_id int,
+	No_of_copies int,
+	FOREIGN KEY (Book_id) REFERENCES Book(Book_id) ON DELETE CASCADE,
+	FOREIGN KEY (Branch_id) REFERENCES library_branch (Branch_id) ON DELETE CASCADE,
+	PRIMARY KEY (Book_id,Branch_id)
+);
+
+create table card
+(
+	C_no int PRIMARY KEY
+);
+
+create table book_lending
+(
+	Book_id int,
+	Branch_id int,
+	C_no int,
+	date_out date,
+	due_date date,
+	FOREIGN KEY (Book_id) REFERENCES Book(Book_id) ON DELETE CASCADE,
+	FOREIGN KEY (Branch_id) REFERENCES library_branch (Branch_id) ON DELETE CASCADE
+);
+
+insert into publisher values('MCGRAW-HILL','BANGALORE',9989076587);
+insert into publisher values('PEARSON','NEW DELHI',9889076565);
+insert into publisher values('RANDOM HOUSE','HYDERABAD',7455679345);
+insert into publisher values('HACHETTE LIVRE','CHENNAI',8970862340);
+insert into publisher values('GRUPO PLANTEA','BANGALORE',7756120238);
+
+INSERT INTO BOOK VALUES (1,'DBMS','2017-01-01','MCGRAW-HILL');
+INSERT INTO BOOK VALUES (2,'ADBMS','2016-06-01','MCGRAW-HILL');
+INSERT INTO BOOK VALUES (3,'CN','2016-09-01','PEARSON');
+INSERT INTO BOOK VALUES (4,'CG','2015-09-01','GRUPO PLANTEA');
+INSERT INTO BOOK VALUES (5,'OS','2016-05-01','PEARSON');
+
+INSERT INTO BOOK_AUTHOR VALUES (1, 'NAVATHE');
+INSERT INTO BOOK_AUTHOR VALUES (2, 'NAVATHE');
+INSERT INTO BOOK_AUTHOR VALUES (3, 'TANENBAUM');
+INSERT INTO BOOK_AUTHOR VALUES (4, 'EDWARD ANGEL');
+INSERT INTO BOOK_AUTHOR VALUES (5, 'GALVIN');
+
+INSERT INTO LIBRARY_BRANCH VALUES (10,'RR NAGAR','BANGALORE');
+INSERT INTO LIBRARY_BRANCH VALUES (11,'RNSIT','BANGALORE');
+INSERT INTO LIBRARY_BRANCH VALUES (12,'RAJAJI NAGAR', 'BANGALORE');
+INSERT INTO LIBRARY_BRANCH VALUES (13,'NITTE','MANGALORE');
+INSERT INTO LIBRARY_BRANCH VALUES (14,'MANIPAL','UDUPI');
+
+INSERT INTO BOOK_COPIES VALUES (1, 10, 10);
+INSERT INTO BOOK_COPIES VALUES (1, 11, 5);
+INSERT INTO BOOK_COPIES VALUES (2, 12, 2);
+INSERT INTO BOOK_COPIES VALUES (2, 13, 5);
+INSERT INTO BOOK_COPIES VALUES (3, 14, 7);
+INSERT INTO BOOK_COPIES VALUES (5, 10, 1);
+INSERT INTO BOOK_COPIES VALUES (4, 11, 3);
+
+INSERT INTO CARD VALUES (100);
+INSERT INTO CARD VALUES (101);
+INSERT INTO CARD VALUES (102);
+INSERT INTO CARD VALUES (103);
+INSERT INTO CARD VALUES (104);
+
+INSERT INTO BOOK_LENDING VALUES (1, 10, 101, '2017-01-01', '2017-06-01');
+INSERT INTO BOOK_LENDING VALUES (3, 14, 101, '2017-01-11', '2017-03-11');
+INSERT INTO BOOK_LENDING VALUES (2, 13, 101, '2017-02-21', '2017-04-21');
+INSERT INTO BOOK_LENDING VALUES (4, 11, 101, '2017-03-15', '2017-07-15');
+INSERT INTO BOOK_LENDING VALUES (1, 11, 104, '2017-04-12', '2017-05-12');
+
+
+query 1
+
+SELECT B.Book_id,B.Title,B.Pub_year,A.Author_name,C.No_of_copies,L.Branch_id
+FROM BOOK B, BOOK_AUTHOR A, BOOK_COPIES C, LIBRARY_BRANCH L
+WHERE B.Book_id=A.Book_id AND B.Book_id=C.Book_id AND L.Branch_id=C.Branch_id;
+
+query 2
+
+SELECT C_no 
+FROM BOOK_LENDING
+WHERE date_out BETWEEN '2017-01-01' and '2017-06-01'
+GROUP BY C_no
+HAVING COUNT(*)>3;
+
+query 3
+
+DELETE FROM BOOK
+WHERE Book_id=3;
+
+select * from book
+
+query 4
+
+CREATE VIEW V_PUBLICATION AS 
+SELECT Pub_year
+FROM BOOK;
+
+SELECT * FROM V_PUBLICATION
+
+query 5
+
+CREATE VIEW V_BOOKS AS
+SELECT B.Book_id, B.Title,C.No_of_copies
+FROM BOOK B, BOOK_COPIES C, LIBRARY_BRANCH L
+WHERE B.Book_id=C.Book_id AND C.Branch_id=L.Branch_id;
+
+select * from V_BOOKS;
